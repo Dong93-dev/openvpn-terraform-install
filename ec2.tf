@@ -34,18 +34,18 @@ resource "aws_instance" "openvpn" {
   associate_public_ip_address = true
   instance_type               = var.instance_type
   key_name                    = aws_key_pair.openvpn.key_name
-  subnet_id                   = aws_subnet.openvpn.id
+  subnet_id                   = data.aws_subnet.openvpn.id
 
   vpc_security_group_ids = [
     aws_security_group.openvpn.id,
     aws_security_group.ssh_from_local.id,
   ]
 
-  root_block_device {
-    volume_type           = "gp2"
-    volume_size           = var.instance_root_block_device_volume_size
-    delete_on_termination = true
-  }
+  # root_block_device {
+  #   volume_type           = "gp2"
+  #   volume_size           = var.instance_root_block_device_volume_size
+  #   delete_on_termination = true
+  # }
 
   tags = {
     Name        = var.tag_name
@@ -53,15 +53,15 @@ resource "aws_instance" "openvpn" {
   }
 }
 
-resource "aws_eip" "openvpn_eip" {
-  instance = aws_instance.openvpn.id
-  vpc      = true
-}
+# resource "aws_eip" "openvpn_eip" {
+#   instance = aws_instance.openvpn.id
+#   vpc      = true
+# }
 
 resource "null_resource" "openvpn_bootstrap" {
   connection {
     type        = "ssh"
-    host        = aws_eip.openvpn_eip.public_ip
+    host        = aws_instance.openvpn.public_ip
     user        = var.ec2_username
     port        = "22"
     private_key = file("${path.module}/${var.ssh_private_key_file}")
@@ -75,8 +75,8 @@ resource "null_resource" "openvpn_bootstrap" {
       "chmod +x openvpn-install.sh",
       <<EOT
       sudo AUTO_INSTALL=y \
-           APPROVE_IP=${aws_eip.openvpn_eip.public_ip} \
-           ENDPOINT=${aws_eip.openvpn_eip.public_dns} \
+           APPROVE_IP=${aws_instance.openvpn.public_ip} \
+           ENDPOINT=${aws_instance.openvpn.public_dns} \
            ./openvpn-install.sh
       
 EOT
@@ -94,7 +94,7 @@ resource "null_resource" "openvpn_update_users_script" {
 
   connection {
     type        = "ssh"
-    host        = aws_eip.openvpn_eip.public_ip
+    host        = aws_instance.openvpn.public_ip
     user        = var.ec2_username
     port        = "22"
     private_key = file("${path.module}/${var.ssh_private_key_file}")
@@ -126,7 +126,7 @@ resource "null_resource" "openvpn_download_configurations" {
     mkdir -p ${var.ovpn_config_directory};
     scp -o StrictHostKeyChecking=no \
         -o UserKnownHostsFile=/dev/null \
-        -i ${var.ssh_private_key_file} ${var.ec2_username}@${aws_eip.openvpn_eip.public_ip}:/home/${var.ec2_username}/*.ovpn ${var.ovpn_config_directory}/
+        -i ${var.ssh_private_key_file} ${var.ec2_username}@${aws_instance.openvpn.public_ip}:/home/${var.ec2_username}/*.ovpn ${var.ovpn_config_directory}/
     
 EOT
 

@@ -2,10 +2,10 @@
 # AWS Settings
 ############### 
 
-aws_region = "<your-region>"
+aws_region = "eu-west-2"
 
-shared_credentials_file = "/path/to/.aws/credentials"
+shared_credentials_file = "~/.aws/credentials"
 
-profile = "<your-profile>"
+profile = "default"
 
-ovpn_users = ["userOne", "userTwo", "userThree"]
+ovpn_users = ["Dong", "Sichun"]

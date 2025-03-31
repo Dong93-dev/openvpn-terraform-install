@@ -1,6 +1,6 @@
 variable "aws_region" {
   description = "The AWS region to use"
-  default     = "eu-west-2"
+  default     = "eu-west-2b"
 }
 
 variable "shared_credentials_file" {
@@ -23,7 +23,7 @@ variable "cidr_block" {
 
 variable "instance_type" {
   description = "The instance type to use"
-  default     = "t2.micro"
+  default     = "t3.micro"
 }
 
 variable "instance_root_block_device_volume_size" {
@@ -44,13 +44,13 @@ variable "openvpn_install_script_location" {
 variable "ssh_public_key_file" {
   # Generate via 'ssh-keygen -f openvpn -t rsa'
   description = "The public SSH key to store in the EC2 instance"
-  default     = "settings/openvpn.pub"
+  default     = "settings/openvpn.pem.pub"
 }
 
 variable "ssh_private_key_file" {
   # Generate via 'ssh-keygen -f openvpn -t rsa'
   description = "The private SSH key used to connect to the EC2 instance"
-  default     = "settings/openvpn"
+  default     = "settings/openvpn.pem"
 }
 
 variable "ovpn_users" {
