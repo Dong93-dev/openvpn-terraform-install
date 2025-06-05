@@ -48,7 +48,7 @@ data "aws_vpc" "openvpn" {
 
 # Get a specific subnet within the default VPC
 data "aws_subnet" "openvpn" {
-  id = "subnet-0057ef383433f4563"
+  id = "subnet-04bc5841dfa4df2c6"
   # vpc_id = data.aws_vpc.openvpn.id
   # availability_zone = var.aws_region  # Change based on your requirement
 }

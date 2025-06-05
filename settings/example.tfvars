@@ -8,4 +8,4 @@ shared_credentials_file = "~/.aws/credentials"
 
 profile = "default"
 
-ovpn_users = ["Dong", "Sichun"]
+ovpn_users = ["user1", "user2"]
